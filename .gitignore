@@ -1,0 +1,7 @@
+.vercel
+node_modules
+.next
+.netlify
+*.node
+.env.local
+.env*.local
