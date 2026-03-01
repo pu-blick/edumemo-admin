@@ -3,6 +3,25 @@
 import { revalidatePath } from 'next/cache';
 import { createAdminClient } from '@/lib/supabase';
 
+/** 채널(교실) 삭제 */
+export async function deleteClassroom(classroomId: string) {
+  const admin = createAdminClient();
+  const { error } = await admin.rpc('admin_delete_classroom', {
+    p_classroom_id: classroomId,
+  });
+  if (error) return { error: error.message };
+  revalidatePath('/users');
+  return { error: null };
+}
+
+/** 비밀번호 재설정 이메일 발송 */
+export async function resetUserPassword(email: string) {
+  const admin = createAdminClient();
+  const { error } = await admin.auth.resetPasswordForEmail(email);
+  if (error) return { error: error.message };
+  return { error: null };
+}
+
 /** 회원 차단 / 활성화 */
 export async function updateUserStatus(userId: string, status: 'active' | 'blocked') {
   const admin = createAdminClient();

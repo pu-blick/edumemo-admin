@@ -13,16 +13,26 @@ async function getUsers() {
   return data ?? [];
 }
 
+async function getClassrooms() {
+  const admin = createAdminClient();
+  const { data, error } = await admin.rpc('admin_get_classrooms');
+  if (error) {
+    console.error('admin_get_classrooms error:', error.message);
+    return [];
+  }
+  return data ?? [];
+}
+
 export default async function UsersPage() {
-  const users = await getUsers();
+  const [users, classrooms] = await Promise.all([getUsers(), getClassrooms()]);
 
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-black text-slate-800">회원 관리</h1>
-        <p className="text-slate-400 text-sm mt-1">회원 상태 변경, 크레딧·플랜 수동 조정</p>
+        <p className="text-slate-400 text-sm mt-1">회원 상태 변경, 크레딧·플랜 수동 조정, 채널 관리</p>
       </div>
-      <UserTable users={users} />
+      <UserTable users={users} classrooms={classrooms} />
     </div>
   );
 }
